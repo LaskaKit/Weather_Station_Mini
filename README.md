@@ -1,0 +1,1 @@
+LaskaKit Weather Station Mini
