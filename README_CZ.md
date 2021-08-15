@@ -1,5 +1,4 @@
-# Návod na stavbu venkovní Wi-Fi 
-nice s Meteo Mini
+# Návod na stavbu venkovní Wi-Fi meteostanice s Meteo Mini
 Přemýšlíte o výrobě své vlastní [domácí meteostanice](https://www.laskarduino.cz/laskakit-meteo-mini-meteostanice/)? Nachystali jsme pro vás kompletní kit obsahující radiační štít, krabičku, držák štítu, naší vývojovou desku [Meteo Mini](https://www.laskarduino.cz/laskakit-meteo-mini/), kterou jednoduše naprogramujete v Arduino a samozřejmě šroubky a matičky k přichycení. 
 
 ## 3D tištěné části meteostanice
