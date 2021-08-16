@@ -57,7 +57,7 @@ You may slide to holder.
 ## Weather Station Mini and enclosure
 
 Now we may check our development board called [Weather Station Mini](https://www.laskarduino.cz/laskakit-meteo-mini/) from our lab. You may also see the [github](https://github.com/LaskaKit/Meteo_Mini) of Weather Station Mini.
-The board contains [Wi-Fi module ESP12F](https://www.laskarduino.cz/ai-thinker-esp-12f-esp8266-ce-wifi-modul/), it is assebmled by connector for I2C bus, you may also use sensro with 1-wire bus (e.i. DS18B20). Outdoor weather station is powered from [LiPol battery](https://www.laskardu0no.cz/baterie-a-akumulatory/), which is connected by JST-PH connector. The battery may be charged from microUSB connector or 6V solar panel.
+The board contains [Wi-Fi module ESP12F](https://www.laskarduino.cz/ai-thinker-esp-12f-esp8266-ce-wifi-modul/), it is assembled by connector for I2C bus, you may also use sensor with 1-wire bus (e.i. DS18B20). Outdoor weather station is powered from [LiPol battery](https://www.laskardu0no.cz/baterie-a-akumulatory/), which is connected by JST-PH connector. The battery may be charged from microUSB connector or 6V solar panel.
 
 ¨The board with Wi-Fi module [ESP12F](https://www.laskarduino.cz/ai-thinker-esp-12f-esp8266-ce-wifi-modul/) has voltage divider on board connected to battery.
 
@@ -66,7 +66,7 @@ The board contains [Wi-Fi module ESP12F](https://www.laskarduino.cz/ai-thinker-e
 You may use as a sensor of pressure, temperature and humidity for example [BME280](https://www.laskarduino.cz/arduino-senzor-tlaku--teploty-a-vlhkosti-bme280/).
 You may solder the wires or use male pin header.
 
-Except of this sensor, you may also use [sensor of temperature and humidty SHT30](https://www.laskarduino.cz/senzor-teploty-a-vlhkosti-vzduchu-sht30/). Vylepšit stanici můžete třeba i [dešťový senzor](https://www.laskarduino.cz/destovy-senzor/).
+Except of this sensor, you may also use [sensor of temperature and humidty SHT30](https://www.laskarduino.cz/senzor-teploty-a-vlhkosti-vzduchu-sht30/).
 
 Next bus which is available on board is 1-wire bus. It is three wires bus where you can connect sensor of temperature and humidty [DS18B20](https://www.laskarduino.cz/dallas-digitalni-cidlo-teploty-ds18b20--to-92/) or solder the cable or [waterproof version of DS1820](https://www.laskarduino.cz/dallas-digitalni-vodotesne-cidlo-teploty-ds18b20-1m/).
 
@@ -78,7 +78,7 @@ Connect the Weather Mini board and sensor to enclosure.
 
 Now we will continue with radiation shield.
 
-The radation sheild is pressent in the outdoor Weather Station Mini kit.
+The radation shield is pressent in the outdoor Weather Station Mini kit.
 
 ## Radiation shield
 
@@ -103,7 +103,7 @@ The wires pass through holde in the enclosure of [Weather Station Mini](https://
 
 ![14](https://github.com/LaskaKit/Weather_Station_Mini/blob/main/img/14.jpg)
 
-Screw the both part of the enclosure with [Weather Station Mini](https://www.laskarduino.cz/laskakit-meteo-mini/) and [LiPol akumulátorem](https://www.laskarduino.cz/baterie-a-akumulatory/).
+Screw the both part of the enclosure with [Weather Station Mini](https://www.laskarduino.cz/laskakit-meteo-mini/) and [LiPol battery](https://www.laskarduino.cz/baterie-a-akumulatory/).
 
 ![15](https://github.com/LaskaKit/Weather_Station_Mini/blob/main/img/15.jpg)
 
