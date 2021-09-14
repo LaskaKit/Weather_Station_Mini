@@ -1,10 +1,10 @@
 # Návod na stavbu venkovní Wi-Fi meteostanice s Meteo Mini
-Přemýšlíte o výrobě své vlastní [domácí meteostanice](https://www.laskarduino.cz/laskakit-meteo-mini-meteostanice/)? Nachystali jsme pro vás kompletní kit obsahující radiační štít, krabičku, držák štítu, naší vývojovou desku [Meteo Mini](https://www.laskarduino.cz/laskakit-meteo-mini/), kterou jednoduše naprogramujete v Arduino a samozřejmě šroubky a matičky k přichycení. 
+Přemýšlíš o výrobě své vlastní [domácí meteostanice](https://www.laskarduino.cz/laskakit-meteo-mini-meteostanice/)? Nachystali jsme pro tebe kompletní kit obsahující radiační štít, krabičku, držák štítu, naší vývojovou desku [Meteo Mini](https://www.laskarduino.cz/laskakit-meteo-mini/), kterou jednoduše naprogramujete v Arduino a samozřejmě šroubky a matičky k přichycení. 
 
 ## 3D tištěné části meteostanice
 U nás můžete zakoupit i 3D tištěné krabičky, pokud si je chcete vytisknout sami, můžete. Modely najdete na našem [github](https://github.com/LaskaKit/Weather_Station_Mini/tree/main/3D).
 
-Pokud si je chcete vytisknout sami, doporučujeme následující postup.
+Pokud si je chceš vytisknout sami, doporučujeme následující postup.
 
 Holder tiskněte takto s podpěrami. 
 
