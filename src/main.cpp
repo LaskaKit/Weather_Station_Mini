@@ -9,9 +9,9 @@
  
  * Board: Generic ESP8266 Module
 
- * OneWire library from Arduino IDE
- * Adafruit BME280 library from Arduino IDE
- * Miles Burton DS18B20 library from Arduino IDE
+ * OneWire library
+ * Adafruit BME280 library
+ * Miles Burton DS18B20 library
  */
 
 // připojení knihoven
