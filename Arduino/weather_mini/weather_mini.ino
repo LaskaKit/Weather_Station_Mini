@@ -1,8 +1,7 @@
-/* LasKKit DIY Mini Weather Station. 
+/* LaskaKit DIY Mini Weather Station. 
  * Thingspeak edition
  * Read Temperature, Humidity and pressure and send to Thingspeak
- * 
- * For settings see config.h
+ * For settings see settings.h
  * 
  * Email:podpora@laskarduino.cz
  * Web:laskarduino.cz
@@ -12,6 +11,7 @@
  * OneWire library from Arduino IDE
  * Adafruit BME280 library from Arduino IDE
  * Miles Burton DS18B20 library from Arduino IDE
+ * 
  */
 
 // připojení knihoven
