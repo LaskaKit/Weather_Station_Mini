@@ -1,22 +1,22 @@
-/* LaskaKit DIY Mini Weather Station. 
+/* LasKKit DIY Mini Weather Station. 
  * Thingspeak edition
  * Read Temperature, Humidity and pressure and send to Thingspeak
- * For settings see settings.h
  * 
- * Email:podpora@laskarduino.cz
- * Web:laskarduino.cz
+ * For settings see config.h
+ * 
+ * Email:podpora@laskakit.cz
+ * Web:laskakit.cz
  
  * Board: Generic ESP8266 Module
 
- * OneWire library from Arduino IDE
- * Adafruit BME280 library from Arduino IDE
- * Miles Burton DS18B20 library from Arduino IDE
- * 
+ * OneWire library
+ * Adafruit BME280 library
+ * Miles Burton DS18B20 library
  */
 
 // připojení knihoven
 #include <Arduino.h>
-#include "config_my.h"        // change to config.h and fill the file.
+#include "config.h"        // change to config.h and fill the file.
 
 #include <Wire.h>
 #include <OneWire.h>
@@ -93,6 +93,14 @@ void postData(){
   }
 }
 
+void GoToSleep(){
+    delay(1);
+  // ESP Deep Sleep 
+  // Radio po probuzeni bude vypnuto | Radio disabled after wake up
+  Serial.println("ESP8266 in sleep mode");
+  ESP.deepSleep(SLEEP_SEC * 1000000, WAKE_RF_DISABLED); 
+}
+
 // pripojeni k WiFi | WiFi Connection
 void WiFiConnection(){
   Serial.println();
@@ -102,9 +110,16 @@ void WiFiConnection(){
  // WiFi.config(ip,gateway,subnet);   // Použít statickou IP adresu, config.h | Use static ip address, see config.h
   WiFi.begin(ssid, pass);
 
+  int startConnectingToWiFi = millis();
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
+    //Go to sleep if can't connect to WiFi more than 1 minut
+    if(millis() - startConnectingToWiFi > 60000){
+      Serial.print("Can't connect to...");
+      Serial.println(ssid);
+      GoToSleep();
+    }
   }
   Serial.println("");
   Serial.println("Wi-Fi connected successfully");
@@ -183,11 +198,7 @@ void setup() {
   postData();
 
   WiFi.disconnect(true);
-  delay(1);
-  // ESP Deep Sleep 
-  // Radio po probuzeni bude vypnuto | Radio disabled after wake up
-  Serial.println("ESP8266 in sleep mode");
-  ESP.deepSleep(SLEEP_SEC * 1000000, WAKE_RF_DISABLED); 
+  GoToSleep();
 }
 
 void loop(){

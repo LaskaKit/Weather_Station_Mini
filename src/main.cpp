@@ -4,8 +4,8 @@
  * 
  * For settings see config.h
  * 
- * Email:podpora@laskarduino.cz
- * Web:laskarduino.cz
+ * Email:podpora@laskakit.cz
+ * Web:laskakit.cz
  
  * Board: Generic ESP8266 Module
 
