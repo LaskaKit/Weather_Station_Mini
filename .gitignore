@@ -72,7 +72,8 @@
 .vscode/c_cpp_properties.json
 .vscode/launch.json
 .vscode/ipch
-src/config_my.h
+SW/Thingspeak/src/config_my.h
+SW/tmep/weather_mini/config_my.h
 
 ############
 ## Windows
