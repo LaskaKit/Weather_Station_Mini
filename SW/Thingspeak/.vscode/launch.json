@@ -1,0 +1,44 @@
+// AUTOMATICALLY GENERATED FILE. PLEASE DO NOT MODIFY IT MANUALLY
+//
+// PIO Unified Debugger
+//
+// Documentation: https://docs.platformio.org/page/plus/debugging.html
+// Configuration: https://docs.platformio.org/page/projectconf/section_env_debug.html
+
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "platformio-debug",
+            "request": "launch",
+            "name": "PIO Debug",
+            "executable": "/Users/konstantinlaska/Library/CloudStorage/OneDrive-SharedLibraries-LaskaKit/LaskaKit - Documents/GitHub/Projects/0.Project/Weather_Station_Mini/.pio/build/esp12e/firmware.elf",
+            "projectEnvName": "esp12e",
+            "toolchainBinDir": "/Users/konstantinlaska/.platformio/packages/toolchain-xtensa/bin",
+            "internalConsoleOptions": "openOnSessionStart",
+            "preLaunchTask": {
+                "type": "PlatformIO",
+                "task": "Pre-Debug"
+            }
+        },
+        {
+            "type": "platformio-debug",
+            "request": "launch",
+            "name": "PIO Debug (skip Pre-Debug)",
+            "executable": "/Users/konstantinlaska/Library/CloudStorage/OneDrive-SharedLibraries-LaskaKit/LaskaKit - Documents/GitHub/Projects/0.Project/Weather_Station_Mini/.pio/build/esp12e/firmware.elf",
+            "projectEnvName": "esp12e",
+            "toolchainBinDir": "/Users/konstantinlaska/.platformio/packages/toolchain-xtensa/bin",
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "type": "platformio-debug",
+            "request": "launch",
+            "name": "PIO Debug (without uploading)",
+            "executable": "/Users/konstantinlaska/Library/CloudStorage/OneDrive-SharedLibraries-LaskaKit/LaskaKit - Documents/GitHub/Projects/0.Project/Weather_Station_Mini/.pio/build/esp12e/firmware.elf",
+            "projectEnvName": "esp12e",
+            "toolchainBinDir": "/Users/konstantinlaska/.platformio/packages/toolchain-xtensa/bin",
+            "internalConsoleOptions": "openOnSessionStart",
+            "loadMode": "manual"
+        }
+    ]
+}

@@ -1,0 +1,1 @@
+# ESP8266 version, not supported anymore
