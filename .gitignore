@@ -74,7 +74,6 @@
 .vscode/launch.json
 .vscode/ipch
 SW/Thingspeak/src/config_my.h
-SW/tmep/weather_mini/config_my.h
 
 ############
 ## Windows
