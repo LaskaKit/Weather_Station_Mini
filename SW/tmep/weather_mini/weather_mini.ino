@@ -1,4 +1,4 @@
-/* LasKKit DIY Mini Weather Station. 
+/* LaskaKit DIY Mini Weather Station. 
  * TMEP edition
  * Read Temperature, Humidity and pressure and send to TMEP.cz
  * 
