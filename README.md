@@ -1,6 +1,6 @@
 # Outdoor weather station with LaskaKit Weather Station Mini - complete kit
 
-Are you thinking of making your own home weather station? We have prepared a complete kit for you, including a radiation shield, box, shield holder, fasteners and our Meteo Mini development board, which you can easily program using the Arduino IDE.
+Are you thinking of making your own home weather station? We have prepared a complete kit for you, including a radiation shield, box, shield holder, fasteners and our [Meteo Mini development board](https://www.laskakit.cz/laskakit-meteo-mini/), which you can easily program using the Arduino IDE.
 
 ![LaskaKit WeatherStation kit](https://github.com/LaskaKit/Weather_Station_Mini/blob/main/img/LaskaKitMeteo.JPG)
 
