@@ -11,7 +11,6 @@ For even greater simplicity of connection, the board is ready to accommodate the
 
 n our really detailed instructions for building a weather station with the Meteo Mini, you will find basic information on how to build and program it, right through to the settings. In fact, in our sample code we use WiFi Manager, which is used for the initial setup of the entire weather station. So just plug the battery into the Meteo Mini, find the WiFi network that the Meteo Mini will create, log in (AP: LaskaKitMeteo, Password: meteostation) and set up your home WiFi network and you're done.
 
-Translated with www.DeepL.com/Translator (free version)
 Link to Weather Station kit [https://www.laskarduino.cz/laskakit-meteo-mini-meteostanice/](https://www.laskarduino.cz/laskakit-meteo-mini-meteostanice/)
 
 
