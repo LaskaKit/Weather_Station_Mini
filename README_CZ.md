@@ -1,25 +1,32 @@
+
 # Návod na stavbu venkovní Wi-Fi meteostanice s Meteo Mini
-Přemýšlíš o výrobě své vlastní [domácí meteostanice](https://www.laskarduino.cz/laskakit-meteo-mini-meteostanice/)? Nachystali jsme pro tebe kompletní kit obsahující radiační štít, krabičku, držák štítu, naší vývojovou desku [Meteo Mini](https://www.laskarduino.cz/laskakit-meteo-mini/), kterou jednoduše naprogramuješ v Arduino a samozřejmě šroubky a matičky k přichycení. 
-
+Přemýšlíš o výrobě své vlastní domácí meteostanice? Nachystali jsme pro tebe [kompletní kit](https://www.laskakit.cz/laskakit-meteo-mini-meteostanice/) obsahující radiační štít, krabičku, držák štítu, spojovací materiál a naší vývojovou desku [Meteo Mini](https://www.laskakit.cz/laskakit-meteo-mini/), kterou jednoduše naprogramuješ pomocí Arduino IDE.<br/>
+<br/>
+![LaskaKit WeatherStation kit](https://github.com/LaskaKit/Weather_Station_Mini/blob/main/img/LaskaKitMeteo.JPG)<br/>
+<br/>
+Obsahuje modul ESP-C3-12F založený na Wi-Fi čipu ESP32-C3, je osazen konektorem pro připojení I2C čidel. Meteostanice je napájena z LiPol akumulátoru, který je připojen pomocí konektoru na základní desce.<br/>
+Pro ještě větší jednoduchost zapojení je deska připravena na osazení interního teplotního čidla DALLAS DS18B20 a nechybí náš populární konektor μŠup pro snadné 
+připojení dalších čidel se sběrnicí I2C. Deska má také integrovanou nabíječku akumulátoru a tak může být akumulátor nabíjen z USB-C konektoru, 
+nebo solárního panelu se jmenovitým napětím 5-6V. Pro ten je na základní desce rovněž osazen konektor. Na desce je též osazený dělič napětí, který je připojen k akumulátoru a jeho výstup je připojen na ADC vstup mikrokontroléru. Stav akumulátoru tak bude neustále pod dohledem. <br/>
 Kit obsahuje všechny potřebné komponenty:<br/>
-• 1ks – Základní deska [LaskaKit Meteo Mini PCB antenna](https://www.laskarduino.cz/laskakit-meteo-mini/) <br/>
-• 1ks – Baterie [GeB LiPol Baterie 603048 900mAh 3.7V JST-PH 2.0](https://www.laskarduino.cz/ehao-lipol-baterie-603048-900mah-3-7v/) <br/>
-• 1ks – [Solární panel 6V 2W](https://www.laskarduino.cz/solarni-panel-6v-2w/) <br/>
-• 1ks – [Senzor tlaku, teploty a vlhkosti BME280](https://www.laskarduino.cz/arduino-senzor-tlaku--teploty-a-vlhkosti-bme280/) <br/>
-• 1ks – Propojovací kabel [JST-PH-4 2mm 4pin konektor s 20cm vodiči](https://www.laskarduino.cz/jst-ph-4-2mm-4pin-konektor-s-20cm-vodici/) <br/>
-• 1ks – Propojovací kabel JST-PH-2 2mm 2pin  solar custom 2x0,34 40cm <br/>
-• 1ks – [Kryt pro čidla meteostanice, 70x145mm, plast](https://www.laskarduino.cz/kryt-pro-cidla-meteostanice--70x145mm--plast/) <br/>
-• 4ks – [Šroub s válcovou hlavou a křížovou drážkou DIN 7985A M3x6](https://www.laskarduino.cz/sroub-s-valcovou-hlavou-a-krizovou-drazkou-m3x6-ocel/) <br/>
-• 2ks – Šroub s válcovou hlavou a křížovou drážkou DIN 7985A M3x8 <br/>
-• 1ks – Šroub s válcovou hlavou a křížovou drážkou DIN 7985A M3x12 <br/>
-• 2ks – Šroub s válcovou hlavou a křížovou drážkou DIN 7985A M3x20 <br/>
-• 4ks – [Šroub do termoplastů s čočkovou hlavou a křížovou drážkou BN 82428 2,2x5](https://www.laskarduino.cz/sroub-do-termoplastu-s-cockovou-hlavou-a-krizovou-drazkou-2-2x5-bn-82428-ocel/) <br/>
-• 4ks – Šroub do termoplastů s čočkovou hlavou a křížovou drážkou BN 82428 2,2x8 <br/>
-• 2ks – Páska vázací 2,5x120 mm černá <br/>
-• 3ks – Páska vázací 3,6x300 mm černá<br/>
-
-Detailní návod jak celou venkovní Arduino meteostanici s ESP12 a Wi-Fi konektivitou najdeš na produktové stránce.
-
-Odkaz na stavebnici najdeš na [https://www.laskarduino.cz/laskakit-meteo-mini-meteostanice/](https://www.laskarduino.cz/laskakit-meteo-mini-meteostanice/)
-
-![LaskaKit WeatherStation kit](https://github.com/LaskaKit/Weather_Station_Mini/blob/main/img/LaskaKitMeteo.JPG)
+<br/>
+![LaskaKit Meteo Mini](https://github.com/LaskaKit/Weather_Station_Mini/blob/main/img/2.jpg)<br/>
+● 1 ks – [Základní deska LaskaKit Meteo Mini](https://www.laskakit.cz/laskakit-meteo-mini/) (buď PCB antena pro integrovanou anténu nebo IPEX pro 
+externí)<br/>
+● 1 ks – [Senzor tlaku, teploty a vlhkosti LaskaKit BME280](https://www.laskakit.cz/arduino-senzor-tlaku--teploty-a-vlhkosti-bme280/)<br/>
+● 1 ks – [Baterie GeB LiPol Baterie 603048 900mAh 3.7V JST-PH 2.0](https://www.laskakit.cz/ehao-lipol-baterie-603048-900mah-3-7v/)<br/>
+● 1 ks – [Solární panel 5V 4W s držákem na zeď](https://www.laskakit.cz/solarni-panel-5v-4w-s-drzakem-na-zed/)<br/>
+● 1 ks – [Napájecí kabel JQ-118 USB-C do JST-PH-2 2mm 10cm](https://www.laskakit.cz/napajeci-kabel-jq-118j-usb-c-do-jst-ph-2-2mm-10cm/)<br/>
+● 1 ks – [μŠup, STEMMA QT, Qwiic JST-SH 4-pin kabel - 10cm](https://www.laskakit.cz/--sup--stemma-qt--qwiic-jst-sh-4-pin-kabel-10cm/)<br/>
+● 1 ks – [Kryt pro čidla meteostanice, 70x145mm, plast](https://www.laskakit.cz/kryt-pro-cidla-meteostanice--70x145mm--plast/)<br/>
+● 1 ks – [Anténa 3.0dBi 11.5cm 2.4G](https://www.laskakit.cz/antena-10cm-2-4g/) + Pigtail RF240 (v případě externí antény)<br/>
+● 6 ks – Šroub M2.2x5 (přichycení čidla a desky do krabičky)<br/>
+● 1 ks – Šroub M3.5x12 (volitelné přichycení soláru na radiační štít)<br/>
+● 4 ks – Šroub M2.2x16 (přichycení vrchního krytu krabičky)<br/>
+● 2 ks – Šroub M3x20 (přichycení krabičky s držákem do radiačního štítu)<br/>
+● 3 ks – Páska vázací 3,6x300 mm černá<br/>
+<br/>
+V našem opravdu detailním návodu na stavbu meteostanice s Meteo Mini najdeš jak základní informace o sestavení a naprogramování až po nastavení. V našem vzorovém kódu totiž používáme WiFi Manager, který je použitý pro prvotní nastavení celé meteostanice. Stačí tak zapojit do Meteo Mini akumulátor, vyhledat WiFi síť, kterou Meteo Mini vytvřoí, přihlásit se (AP: LaskaKitMeteo, Heslo: meteostation) a nastavit tvou domácí Wi-Fi síť a je hotovo.<br/>
+Odkaz na stavebnici najdeš na [https://www.laskarduino.cz/laskakit-meteo-mini-meteostanice/](https://www.laskarduino.cz/laskakit-meteo-mini-meteostanice/)<br/>
+<br/>
+![LaskaKit WeatherStation kit](https://github.com/LaskaKit/Weather_Station_Mini/blob/main/img/LaskaKitMeteo.JPG)<br/>
