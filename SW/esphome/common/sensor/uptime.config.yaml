@@ -1,0 +1,3 @@
+platform: uptime
+name: "Uptime Sensor"
+entity_category: diagnostic

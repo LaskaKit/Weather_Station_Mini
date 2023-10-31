@@ -1,0 +1,17 @@
+# Enable logging
+logger:
+
+api:
+  encryption:
+    key: !secret api_encryption_key
+ota:
+  password: !secret ota_password
+
+sensor:
+  - <<: !include sensor/uptime.config.yaml
+  - <<: !include sensor/wifi_signal.config.yaml
+binary_sensor:
+  - <<: !include binary_sensor/connection_status.config.yaml
+
+switch:
+  - <<: !include switch/restart_switch.config.yaml
