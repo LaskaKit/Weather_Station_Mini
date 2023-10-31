@@ -1,0 +1,4 @@
+platform: status
+name: "Connection Status"
+id: connection_status
+entity_category: diagnostic
