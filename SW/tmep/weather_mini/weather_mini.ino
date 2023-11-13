@@ -21,7 +21,7 @@
 #include <ESP32AnalogRead.h>      // ESP32AnalogRead by madhephaestus https://github.com/madhephaestus/ESP32AnalogRead 
 #include <WiFiManager.h>          // WiFi manager by tzapu https://github.com/tzapu/WiFiManager
 
-#define BME280_ADDRESS (0x76)     // (0x77) cut left and solder right pad on board
+#define BME280_ADDRESS (0x77)     // Default on LaskaKit module
 #define SLEEP_SEC 15*60           // Measurement interval (seconds)
 #define ADC_PIN 0                 // ADC pin on LaskaKit Meteo mini
 #define deviderRatio 1.7693877551 // Voltage devider ratio on ADC pin 1M + 1.3MOhm
