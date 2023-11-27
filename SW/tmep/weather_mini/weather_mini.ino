@@ -11,7 +11,7 @@
  */
 
 // připojení knihoven
-#include "config_my.h"            // change to config.h and fill the file.
+#include "config.h"            // change to config.h and fill the file.
 
 #include <Wire.h>
 #include <WiFi.h>
