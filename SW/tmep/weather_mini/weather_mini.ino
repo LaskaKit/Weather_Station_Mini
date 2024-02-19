@@ -1,4 +1,4 @@
-/* LaskaKit DIY Mini Weather Station. 
+/* LaskaKit DIY Mini Weather Station.  https://www.laskakit.cz/laskakit-meteo-mini-meteostanice/#productDiscussion
  * TMEP edition
  * Read Temperature, Humidity and pressure and send to TMEP.cz
  * 
@@ -25,6 +25,9 @@
 #define SLEEP_SEC 15*60           // Measurement interval (seconds)
 #define ADC_PIN 0                 // ADC pin on LaskaKit Meteo mini
 #define deviderRatio 1.7693877551 // Voltage devider ratio on ADC pin 1M + 1.3MOhm
+#define SDA 19
+#define SCL 18
+#define PIN_ON 3
 
 // Vytvoření instance | Instance creation
 Adafruit_BME280 bme;
@@ -68,6 +71,7 @@ void postData(){
 void GoToSleep(){
     delay(1);
   // ESP Deep Sleep 
+  digitalWrite(PIN_ON, LOW);   // Turn off the uSUP power
   Serial.println("ESP in sleep mode");
   esp_sleep_enable_timer_wakeup(SLEEP_SEC * 1000000);
   esp_deep_sleep_start();
@@ -133,8 +137,12 @@ void setup() {
   Serial.begin(115200);
   while(!Serial) {} // Wait
 
+  // for board version over 3.5 need to turn uSUP ON
+  pinMode(PIN_ON, OUTPUT);      // Set EN pin for uSUP stabilisator as output
+  digitalWrite(PIN_ON, HIGH);   // Turn on the uSUP power
+
   // initilizace BME280 | BME280 Initialization
-  Wire.begin(19,18); // SDA SCL
+  Wire.begin(SDA,SCL);
   if (! bme.begin(BME280_ADDRESS)) {
     Serial.println("Could not find a valid BME280 sensor, check wiring!");
     while (1);
