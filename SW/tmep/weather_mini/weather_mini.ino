@@ -96,7 +96,7 @@ void WiFiConnection(){
     
     wm.setConfigPortalTimeout(180);   // set portal time to  3 min, then sleep.
     bool res;
-    res = wm.autoConnect("LaskaKit AutoConnectAP","laskakit"); // password protected ap
+    res = wm.autoConnect("LaskaKitMeteo","meteostation"); // password protected ap
 
     if(!res) {
         Serial.println("Failed to connect");
