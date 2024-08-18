@@ -18,7 +18,6 @@
 #include <HTTPClient.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BME280.h>      // BME280 by Adafruit 
-#include <ESP32AnalogRead.h>      // ESP32AnalogRead by madhephaestus https://github.com/madhephaestus/ESP32AnalogRead 
 #include <WiFiManager.h>          // WiFi manager by tzapu https://github.com/tzapu/WiFiManager
 
 #define BME280_ADDRESS (0x77)     // Default on LaskaKit module
@@ -31,7 +30,6 @@
 
 // Vytvoření instance | Instance creation
 Adafruit_BME280 bme;
-ESP32AnalogRead adc;
 
 float temperature;
 float pressure;
@@ -122,7 +120,7 @@ void readBME(){
 
 // Měření napětí baterie | Battery voltage measurement
 void readBat(){
-  bat_voltage = adc.readVoltage()*deviderRatio;
+  bat_voltage = analogReadMilliVolts(ADC_PIN) * deviderRatio / 1000;
   Serial.print("Battery voltage " + String(bat_voltage) + "V");
 
 }
@@ -132,7 +130,6 @@ void setup() {
   WiFi.mode( WIFI_OFF );
   delay( 1 );
   
-  adc.attach(ADC_PIN);  
 
   Serial.begin(115200);
   while(!Serial) {} // Wait
