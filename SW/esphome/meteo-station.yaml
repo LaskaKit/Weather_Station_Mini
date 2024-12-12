@@ -15,7 +15,7 @@ esp32:
     type: arduino
 
 # Enable I2C power
-output:
+switch:
   - platform: gpio
     pin: GPIO3 
     id: my_output
