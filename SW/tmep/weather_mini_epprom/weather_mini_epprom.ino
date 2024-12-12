@@ -24,7 +24,7 @@
 #define configPortalTimeout 180
 #define SDA                 19
 #define SCL                 18
-#define PIN_ON              3
+#define POWER               3
 
 //flag for saving data
 bool shouldSaveConfig = false;
@@ -46,7 +46,7 @@ void saveConfigCallback () {
 /********************** EEPROM Section *****************/
 typedef struct {
   char domain_name[40]  = "";
-  char sleep_min_name[3]  = "";
+  char sleep_min_value[3]  = "";
 }
 
 WMSettings;
@@ -57,6 +57,8 @@ void eeprom_read() {
   EEPROM.begin(512);
   EEPROM.get(0, domain);
   EEPROM.get(100, sleep_min);
+  Serial.println("EEPROM readed. Domain: \"" + String(domain.domain_name) + "\", wake up every " + sleep_min.sleep_min_value + " minutes");
+
   EEPROM.end();
 }
 
@@ -65,6 +67,8 @@ void eeprom_saveconfig() {
   EEPROM.put(0, domain);
   EEPROM.put(100, sleep_min);
   EEPROM.commit();
+  Serial.println("EEPROM saved: Domain: " + String(domain.domain_name) + ". Wake up every " + sleep_min.sleep_min_value + " minutes");
+
   EEPROM.end();
 }
 /********************************************************/
@@ -100,8 +104,8 @@ void postData(){
 void GoToSleep(){
   delay(1);
   // ESP Deep Sleep 
-  digitalWrite(PIN_ON, LOW);   // Turn off the uSUP power
-  int sleep_time_min = atoi(sleep_min.sleep_min_name);
+  digitalWrite(POWER, LOW);   // Turn off the uSUP power
+  int sleep_time_min = atoi(sleep_min.sleep_min_value);
   Serial.println("Going to sleep for " + String(sleep_time_min) + " minutes");
   esp_sleep_enable_timer_wakeup(sleep_time_min * 60 * 1000000);
   esp_deep_sleep_start();
@@ -113,18 +117,18 @@ void WiFiConnection(){
   WiFi.mode( WIFI_STA);
   eeprom_read();
 
-  WiFiManagerParameter custom_domain_name("domain_name", "Domain", "", 40);           //(id, label, defaultValue, length)
-  WiFiManagerParameter custom_sleep_min_name("sleep_min_name", "Wake up every minutes",  "15", 3);    //(id, label, defaultValue, length)
+  WiFiManagerParameter custom_domain_name("domain_name", "Domain", domain.domain_name, 40);           //(id, label, defaultValue, length)
+  WiFiManagerParameter custom_sleep_min_value("sleep_min_value", "Wake up every minutes",  sleep_min.sleep_min_value, 3);    //(id, label, defaultValue, length)
 
   //WiFiManager, Local intialization. Once its business is done, there is no need to keep it around
   WiFiManager wm;
-  wm.setSaveConfigCallback(saveConfigCallback);
+  wm.setSaveParamsCallback( saveConfigCallback );
   wm.addParameter(&custom_domain_name);
-  wm.addParameter(&custom_sleep_min_name);
+  wm.addParameter(&custom_sleep_min_value);
 
   // reset settings - wipe stored credentials for testing
   // these are stored by the esp library
-  // wm.resetSettings();
+  //wm.resetSettings();
 
   // Automatically connect using saved credentials,
   // if connection fails, it starts an access point with the specified name ( "AutoConnectAP"),
@@ -136,16 +140,16 @@ void WiFiConnection(){
 
   if(!res) {
     Serial.println("Failed to connect");
-    // ESP.restart();
   } else {
     //if you get here you have connected to the WiFi    
     Serial.println("Wi-Fi connected successfully");
   }
   strcpy(domain.domain_name, custom_domain_name.getValue());
-  strcpy(sleep_min.sleep_min_name, custom_sleep_min_name.getValue());
+  strcpy(sleep_min.sleep_min_value, custom_sleep_min_value.getValue());
 
-  eeprom_saveconfig();
-
+  if(shouldSaveConfig){
+    eeprom_saveconfig();
+  }
 }
 
 // Přečíst data z BME280 | Read data from BME280
@@ -176,8 +180,8 @@ void setup() {
   while(!Serial) {} // Wait for serrial ready
 
   // for board version > 3.5 need to turn uSUP ON
-  pinMode(PIN_ON, OUTPUT);      // Set EN pin for uSUP stabilisator as output
-  digitalWrite(PIN_ON, HIGH);   // Turn on the uSUP power
+  pinMode(POWER, OUTPUT);      // Set EN pin for uSUP stabilisator as output
+  digitalWrite(POWER, HIGH);   // Turn on the uSUP power
 
   // initilizace BME280 | BME280 Initialization
   Wire.begin(SDA,SCL);
