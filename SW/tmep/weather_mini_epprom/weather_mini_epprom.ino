@@ -36,6 +36,7 @@ float temperature;
 float pressure;
 float humidity;
 float bat_voltage;
+int rssi;
 
 //callback notifying us of the need to save config
 void saveConfigCallback () {
@@ -78,7 +79,7 @@ void postData(){
     HTTPClient http;
       
     //GUID, nasleduje hodnota teploty, pro vlhkost "humV", pro CO2 "CO2", pro napeti baterie "v"
-    String serverPath = "http://" + String(domain.domain_name) + ".tmep.cz/index.php?&tempV=" + temperature + "&humV=" + humidity + "&pressV=" + pressure + "&v=" + bat_voltage; 
+    String serverPath = "http://" + String(domain.domain_name) + ".tmep.cz/index.php?&tempV=" + temperature + "&humV=" + humidity + "&pressV=" + pressure + "&v=" + bat_voltage + "&rssi=" + rssi; 
     Serial.println(serverPath);
 
     // zacatek http spojeni
@@ -149,7 +150,9 @@ void WiFiConnection(){
 
   if(shouldSaveConfig){
     eeprom_saveconfig();
-  }
+  } else Serial.println("Data not saved to EEPROM");
+
+  rssi = WiFi.RSSI();
 }
 
 // Přečíst data z BME280 | Read data from BME280
