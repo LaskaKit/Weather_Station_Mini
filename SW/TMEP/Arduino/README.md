@@ -1,0 +1,1 @@
+# Hardcoded TMEP setting, only BME280 sersor,  not updated anymore.
