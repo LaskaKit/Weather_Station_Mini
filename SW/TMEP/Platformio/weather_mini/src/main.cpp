@@ -194,6 +194,15 @@ void eeprom_saveconfig() {
 }
 /********************************************************/
 
+void wrongSetConfigPortal() {
+  Serial.println("Starting configuration portal");
+  custom_serverAddress.setValue(serverAddress,40);
+  custom_sleepTime.setValue(String(sleepTime).c_str(),6);
+  wm.startConfigPortal("LaskaKit Meteo Config");    // If settings was not correct, start configuration portal
+  esp_restart();
+}
+
+
 void postData() {
   if(WiFi.status()== WL_CONNECTED) {
     HTTPClient http;
@@ -211,9 +220,7 @@ void postData() {
         break;
       default:              // If setted wrong
         Serial.print("Error, domain value is " + String(domain) + ", should be from 0 to 1! ");
-        Serial.println("Starting configuration portal");
-        wm.startConfigPortal("LaskaKit Meteo Config");    // If domain is not correct, start configuration portal
-        esp_restart();
+        wrongSetConfigPortal();
         break;
     }
 
@@ -240,9 +247,7 @@ void postData() {
         break;
       default:              // If setted wrong
         Serial.print("Error, sensor value is " + String(sensorType) + ", should be from 0 to 4! ");
-        Serial.println("Starting configuration portal");
-        wm.startConfigPortal("LaskaKit Meteo Config"); // If sensor is not found, start configuration portal
-        esp_restart();
+        wrongSetConfigPortal();
         break;
     }
 
@@ -262,9 +267,7 @@ void postData() {
       Serial.print("HTTP response: ");
       Serial.println(httpResponseCode);
       Serial.println("Error: There is no sensor on this domain, wrong domain?");
-      Serial.println("Starting configuration portal");
-      wm.startConfigPortal("LaskaKit Meteo Config"); // If domain is wrong, start configuration portal
-      esp_restart();
+      wrongSetConfigPortal();
     } else {
       Serial.print("Error code: ");
       Serial.println(httpResponseCode);
@@ -298,6 +301,9 @@ void WiFiConnection() {
   // Set save config callback
   wm.setSaveConfigCallback(eeprom_saveconfig);
 
+  custom_serverAddress.setValue(serverAddress,40);
+  custom_sleepTime.setValue(String(sleepTime).c_str(),6);
+
   // Set custom parameters
   wm.addParameter(&custom_serverAddress);
   wm.addParameter(&custom_domain);
@@ -325,9 +331,7 @@ void readSHT4x() {
 
   if (!sht4x.begin()) {
     Serial.println("Error: Can't find a SHT4x sensor. Or wrong sensor type!");
-    Serial.println("Starting configuration portal");
-    wm.startConfigPortal("LaskaKit Meteo Config"); // If sensor is not found, start configuration portal
-    esp_restart();
+    wrongSetConfigPortal();
   } 
   Serial.println("SHT4x FOUND");
   sht4x.setPrecision(SHT4X_LOW_PRECISION);
@@ -350,9 +354,7 @@ void readBME() {
 
   if (! bme.begin(BME280_ADDRESS)) {
     Serial.println("Error: Can't find a BME280 sensor. Or wrong sensor type!");
-    Serial.println("Starting configuration portal");
-    wm.startConfigPortal("LaskaKit Meteo Config"); // If sensor is not found, start configuration portal
-    esp_restart();
+    wrongSetConfigPortal();
   }
   Serial.println("-- Weather Station Scenario --");
   Serial.println("forced mode, 1x temperature / 1x humidity / 1x pressure oversampling,");
@@ -381,9 +383,7 @@ void readSCD4x() {
 
   if (scd4x.startPeriodicMeasurement()) {
     Serial.println("Error: Can't find a SCD41 sensor. Or wrong sensor type!");
-    Serial.println("Starting configuration portal");
-    wm.startConfigPortal("LaskaKit Meteo Config"); // If sensor is not found, start configuration portal
-    esp_restart();
+    wrongSetConfigPortal();
   }
   Serial.println("SCD41 found");
   delay(3000);
@@ -405,9 +405,7 @@ void readDS18B20() {
   if (!oneWire.search(sensorAddress)) {
     oneWire.reset_search();
     Serial.println("Error: Can't find a DS18B20 sensor. Or wrong sensor type!");
-    Serial.println("Starting configuration portal");
-    wm.startConfigPortal("LaskaKit Meteo Config"); // If sensor is not found, start configuration portal
-    esp_restart();
+    wrongSetConfigPortal();
   }
   Serial.println("DS18B20 found");
 
@@ -427,9 +425,7 @@ void readSHT4xPlusBMP280() {
   // SHT4x
   if (!sht4x.begin()) {
     Serial.println("Error: Can't find a SHT4x sensor. Or wrong sensor type!");
-    Serial.println("Starting configuration portal");
-    wm.startConfigPortal("LaskaKit Meteo Config"); // If sensor is not found, start configuration portal
-    esp_restart();
+    wrongSetConfigPortal();
   } 
   Serial.println("SHT4x FOUND");
   sht4x.setPrecision(SHT4X_LOW_PRECISION);
@@ -444,9 +440,7 @@ void readSHT4xPlusBMP280() {
   // BMP280
   if (! bmp.begin()) {
     Serial.println("Error: Can't find a BMP280 sensor. Or wrong sensor type!");
-    Serial.println("Starting configuration portal");
-    wm.startConfigPortal("LaskaKit Meteo Config"); // If sensor is not found, start configuration portal
-    esp_restart();
+    wrongSetConfigPortal();
   }
   Serial.println("BMP280 FOUND");
   bmp.setSampling(Adafruit_BMP280::MODE_FORCED,     /* Operating Mode. */
@@ -488,9 +482,7 @@ void readSensors(){
       break;
     default:              // If setted wrong
       Serial.print("Error, sensor value is " + String(sensorType) + ", should be from 0 to 4! ");
-      Serial.println("Starting configuration portal");
-      wm.startConfigPortal("LaskaKit Meteo Config"); // If sensor is not found, start configuration portal
-      esp_restart();
+      wrongSetConfigPortal();
       break;
   }
 }
