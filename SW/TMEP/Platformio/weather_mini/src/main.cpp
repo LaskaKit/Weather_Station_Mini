@@ -45,7 +45,7 @@
 #include <DallasTemperature.h>            // DallasTemperature by Miles Burton https://github.com/milesburton/Arduino-Temperature-Control-Library (tested 4.0.1)
 #include <WiFiManager.h>                  // WiFiManager by tzapu https://github.com/tzapu/WiFiManager (tested 2.0.17)
 
-#define version             1.0           // Firmware version
+#define version             2.0           // Firmware version
 #define BME280_ADDRESS      (0x77)        // Default on LaskaKit module
 #define ADC_PIN             0             // ADC pin on LaskaKit Meteo mini
 #define deviderRatio        1.7693877551  // Voltage devider ratio on ADC pin 1M + 1.3MOhm
