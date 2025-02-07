@@ -7,10 +7,12 @@
  *  - fill How long you want the weather station to sleep in minutes,
  *  - choose sensor, now are available: 
  *    + SHT40: (0x44) or (0x45), 
- *    + BME280: (0x77),
+ *    + BME280: (0x77) or (0x76),
  *    + SCD41, 
  *    + DS18B20, 
- *    + SHT4x+BMP280. 
+ *    + SHT4x+BMP280:
+ *      - SHT4x: (0x44) or (0x45), 
+ *      - BMP280: (0x77) or (0x76).
  * 
  * Buy your DIY kit here:             https://www.laskakit.cz/laskakit-meteo-mini-meteostanice/
  * main HW in the kit:
@@ -46,7 +48,6 @@
 #include <WiFiManager.h>                  // WiFiManager by tzapu https://github.com/tzapu/WiFiManager (tested 2.0.17)
 
 #define version             2.0           // Firmware version
-#define BME280_ADDRESS      (0x77)        // Default on LaskaKit module
 #define ADC_PIN             0             // ADC pin on LaskaKit Meteo mini
 #define deviderRatio        1.7693877551  // Voltage devider ratio on ADC pin 1M + 1.3MOhm
 #define configPortalTimeout 180           // Config portal timeout in seconds
@@ -352,9 +353,12 @@ void readBME() {
 
   Wire.begin(SDA,SCL);
 
-  if (! bme.begin(BME280_ADDRESS)) {
-    Serial.println("Error: Can't find a BME280 sensor. Or wrong sensor type!");
-    wrongSetConfigPortal();
+  if (! bme.begin(0x77)) {                      // try default address on LaskaKit module    
+    Serial.println("Can't find a BME280 sensor on 0x77 address. Trying 0x76 ..."); 
+      if (! bme.begin(0x76)) {                  // try another address BME280
+        Serial.println("Error: Can't find a BME280 sensor. Or wrong sensor type!");
+        wrongSetConfigPortal();
+      }
   }
   Serial.println("-- Weather Station Scenario --");
   Serial.println("forced mode, 1x temperature / 1x humidity / 1x pressure oversampling,");
@@ -438,9 +442,12 @@ void readSHT4xPlusBMP280() {
   humidity = hum.relative_humidity;
 
   // BMP280
-  if (! bmp.begin()) {
-    Serial.println("Error: Can't find a BMP280 sensor. Or wrong sensor type!");
-    wrongSetConfigPortal();
+  if (! bmp.begin(0x77)) {                      // try default address on LaskaKit module    
+    Serial.println("Can't find a BMP280 sensor on 0x77 address. Trying 0x76 ..."); 
+      if (! bmp.begin(0x76)) {                  // try another address BMP280
+        Serial.println("Error: Can't find a BMP280 sensor. Or wrong sensor type!");
+        wrongSetConfigPortal();
+      }
   }
   Serial.println("BMP280 FOUND");
   bmp.setSampling(Adafruit_BMP280::MODE_FORCED,     /* Operating Mode. */
