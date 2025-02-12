@@ -329,6 +329,7 @@ void WiFiConnection() {
 void readSHT4x() {
 
   Wire.begin(SDA,SCL);
+  delay(50);                                  // Wait for bus to boot in (we have inconsistent results couple times per day without this)
 
   if (!sht4x.begin()) {
     Serial.println("Error: Can't find a SHT4x sensor. Or wrong sensor type!");
@@ -352,6 +353,7 @@ void readSHT4x() {
 void readBME() {
 
   Wire.begin(SDA,SCL);
+  delay(50);                                  // Wait for bus to boot in (we have inconsistent results couple times per day without this)
 
   if (! bme.begin(0x77)) {                      // try default address on LaskaKit module    
     Serial.println("Can't find a BME280 sensor on 0x77 address. Trying 0x76 ..."); 
@@ -383,6 +385,7 @@ void readBME() {
 void readSCD4x() {
 
   Wire.begin(SDA,SCL);
+  delay(50);                                  // Wait for bus to boot in (we have inconsistent results couple times per day without this)
   scd4x.begin(Wire);
 
   if (scd4x.startPeriodicMeasurement()) {
@@ -425,6 +428,7 @@ void readDS18B20() {
 void readSHT4xPlusBMP280() {
 
   Wire.begin(SDA,SCL);
+  delay(50);                                  // Wait for bus to boot in (we have inconsistent results couple times per day without this)
 
   // SHT4x
   if (!sht4x.begin()) {
@@ -440,7 +444,6 @@ void readSHT4xPlusBMP280() {
 
   temperature = temp.temperature;
   humidity = hum.relative_humidity;
-
   // BMP280
   if (! bmp.begin(0x77)) {                      // try default address on LaskaKit module    
     Serial.println("Can't find a BMP280 sensor on 0x77 address. Trying 0x76 ..."); 
