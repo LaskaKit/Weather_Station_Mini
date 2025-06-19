@@ -51,8 +51,8 @@
 // Uncomment for correct board
 /////////////////////////////////
 
-//#define MeteoMini_V3
-#define MeteoMini_V4
+#define MeteoMini_V3
+//#define MeteoMini_V4
 
 #define version             2.1           // Firmware version
 #define configPortalTimeout 180           // Config portal timeout in seconds
@@ -65,18 +65,18 @@
   #define ONE_WIRE_BUS        10            // DS18B20 pin on LaskaKit Meteo mini
   #define PWR_PIN             3             // Power pin for sensors
   //TODoooo
-  #define OnDemandPin         -1             // Doesn 't exist on V3 board
+  #define OnDemandPin         -1             // Doesn't exist on V3 board
 
 #elif defined MeteoMini_V4
 
-  #define ADC_PIN             3             // ADC pin on LaskaKit Meteo mini
+  #define ADC_PIN             0             // ADC pin on LaskaKit Meteo mini
   #define deviderRatio        1.7693877551  // Voltage devider ratio on ADC pin 1M + 1.3MOhm
-  #define SDA                 4             // I2C SDA pin on LaskaKit Meteo mini
-  #define SCL                 5             // I2C SCL pin on LaskaKit Meteo mini
-  #define ONE_WIRE_BUS        -1            // DS18B20 pin on LaskaKit Meteo mini
-  #define PWR_PIN             11            // Power pin for sensors
+  #define SDA                 8             // I2C SDA pin on LaskaKit Meteo mini
+  #define SCL                 10             // I2C SCL pin on LaskaKit Meteo mini
+  #define ONE_WIRE_BUS        19            // DS18B20 pin on LaskaKit Meteo mini
+  #define PWR_PIN             4            // Power pin for sensors
   //TODoooo
-  #define OnDemandPin         -1
+  #define OnDemandPin         5
 #else
   #error "Board not defined!"
 #endif
