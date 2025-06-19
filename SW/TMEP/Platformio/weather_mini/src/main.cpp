@@ -51,32 +51,24 @@
 // Uncomment for correct board
 /////////////////////////////////
 
-#define MeteoMini_V3
-//#define MeteoMini_V4
+//#define MeteoMini_V3
+#define MeteoMini_V4
 
 #define version             2.1           // Firmware version
 #define configPortalTimeout 180           // Config portal timeout in seconds
 
-#ifdef MeteoMini_V3
   #define ADC_PIN             0             // ADC pin on LaskaKit Meteo mini
   #define deviderRatio        1.7693877551  // Voltage devider ratio on ADC pin 1M + 1.3MOhm
   #define SDA                 19            // I2C SDA pin on LaskaKit Meteo mini
   #define SCL                 18            // I2C SCL pin on LaskaKit Meteo mini
   #define ONE_WIRE_BUS        10            // DS18B20 pin on LaskaKit Meteo mini
+
+#ifdef MeteoMini_V3
   #define PWR_PIN             3             // Power pin for sensors
-  //TODoooo
-  #define OnDemandPin         -1             // Doesn't exist on V3 board
 
 #elif defined MeteoMini_V4
-
-  #define ADC_PIN             0             // ADC pin on LaskaKit Meteo mini
-  #define deviderRatio        1.7693877551  // Voltage devider ratio on ADC pin 1M + 1.3MOhm
-  #define SDA                 8             // I2C SDA pin on LaskaKit Meteo mini
-  #define SCL                 10             // I2C SCL pin on LaskaKit Meteo mini
-  #define ONE_WIRE_BUS        19            // DS18B20 pin on LaskaKit Meteo mini
-  #define PWR_PIN             4            // Power pin for sensors
-  //TODoooo
-  #define OnDemandPin         5
+  #define PWR_PIN             4             // Power pin for sensors
+  #define OnDemandPin         5             // On demand button for calling the configuration portal. Push when the device is powered on to enter the configuration portal.
 #else
   #error "Board not defined!"
 #endif
@@ -217,9 +209,8 @@ void eeprom_saveconfig() {
   Serial.println(": Subdomain: " + String(serverAddress) + "; Domain " + String(domain) + "; Wake up every " + String(sleepTime) + " minutes" + "; Sensor type: " + String(sensorType) + ".");
   EEPROM.end();
 }
-/********************************************************/
 
-void wrongSetConfigPortal() {
+void ConfigPortalOnDemand() {
   Serial.println("Starting configuration portal");
   custom_serverAddress.setValue(serverAddress,40);
   custom_sleepTime.setValue(String(sleepTime).c_str(),6);
@@ -245,7 +236,7 @@ void postData() {
         break;
       default:              // If setted wrong
         Serial.print("Error, domain value is " + String(domain) + ", should be from 0 to 1! ");
-        wrongSetConfigPortal();
+        ConfigPortalOnDemand();
         break;
     }
 
@@ -272,7 +263,7 @@ void postData() {
         break;
       default:              // If setted wrong
         Serial.print("Error, sensor value is " + String(sensorType) + ", should be from 0 to 4! ");
-        wrongSetConfigPortal();
+        ConfigPortalOnDemand();
         break;
     }
 
@@ -292,7 +283,7 @@ void postData() {
       Serial.print("HTTP response: ");
       Serial.println(httpResponseCode);
       Serial.println("Error: There is no sensor on this domain, wrong domain?");
-      wrongSetConfigPortal();
+      ConfigPortalOnDemand();
     } else {
       Serial.print("Error code: ");
       Serial.println(httpResponseCode);
@@ -357,7 +348,7 @@ void readSHT4x() {
 
   if (!sht4x.begin()) {
     Serial.println("Error: Can't find a SHT4x sensor. Or wrong sensor type!");
-    wrongSetConfigPortal();
+    ConfigPortalOnDemand();
   } 
   Serial.println("SHT4x FOUND");
   sht4x.setPrecision(SHT4X_LOW_PRECISION);
@@ -383,7 +374,7 @@ void readBME() {
     Serial.println("Can't find a BME280 sensor on 0x77 address. Trying 0x76 ..."); 
       if (! bme.begin(0x76)) {                  // try another address BME280
         Serial.println("Error: Can't find a BME280 sensor. Or wrong sensor type!");
-        wrongSetConfigPortal();
+        ConfigPortalOnDemand();
       }
   }
   Serial.println("-- Weather Station Scenario --");
@@ -414,7 +405,7 @@ void readSCD4x() {
 
   if (scd4x.startPeriodicMeasurement()) {
     Serial.println("Error: Can't find a SCD41 sensor. Or wrong sensor type!");
-    wrongSetConfigPortal();
+    ConfigPortalOnDemand();
   }
   Serial.println("SCD41 found");
   delay(3000);
@@ -436,7 +427,7 @@ void readDS18B20() {
   if (!oneWire.search(sensorAddress)) {
     oneWire.reset_search();
     Serial.println("Error: Can't find a DS18B20 sensor. Or wrong sensor type!");
-    wrongSetConfigPortal();
+    ConfigPortalOnDemand();
   }
   Serial.println("DS18B20 found");
 
@@ -457,7 +448,7 @@ void readSHT4xPlusBMP280() {
   // SHT4x
   if (!sht4x.begin()) {
     Serial.println("Error: Can't find a SHT4x sensor. Or wrong sensor type!");
-    wrongSetConfigPortal();
+    ConfigPortalOnDemand();
   } 
   Serial.println("SHT4x FOUND");
   sht4x.setPrecision(SHT4X_LOW_PRECISION);
@@ -473,7 +464,7 @@ void readSHT4xPlusBMP280() {
     Serial.println("Can't find a BMP280 sensor on 0x77 address. Trying 0x76 ..."); 
       if (! bmp.begin(0x76)) {                  // try another address BMP280
         Serial.println("Error: Can't find a BMP280 sensor. Or wrong sensor type!");
-        wrongSetConfigPortal();
+        ConfigPortalOnDemand();
       }
   }
   Serial.println("BMP280 FOUND");
@@ -516,7 +507,7 @@ void readSensors(){
       break;
     default:              // If setted wrong
       Serial.print("Error, sensor value is " + String(sensorType) + ", should be from 0 to 4! ");
-      wrongSetConfigPortal();
+      ConfigPortalOnDemand();
       break;
   }
 }
@@ -535,10 +526,18 @@ void setup() {
   // for board version > 3.5 need to turn uSUP ON
   pinMode(PWR_PIN, OUTPUT);      // Set EN pin for uSUP stabilisator as output
   digitalWrite(PWR_PIN, HIGH);   // Turn on the uSUP power
-  pinMode(OnDemandPin, INPUT);
+
 
   Serial.begin(115200);
   while(!Serial) {} // Wait for serrial ready
+
+  #ifdef OnDemandPin
+    pinMode(OnDemandPin, INPUT);
+      // If the OnDemandPin is LOW, start the configuration portal on demand
+      if (digitalRead(OnDemandPin) == LOW) {
+        ConfigPortalOnDemand();
+      }
+  #endif
 
   Serial.println("-------------------");
   Serial.println("LaskaKit Meteo Mini Weather Station");
