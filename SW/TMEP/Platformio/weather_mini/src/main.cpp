@@ -46,6 +46,7 @@
 #include <OneWire.h>                      // OneWire by Paul Stoffregen
 #include <DallasTemperature.h>            // DallasTemperature by Miles Burton https://github.com/milesburton/Arduino-Temperature-Control-Library (tested 4.0.1)
 #include <WiFiManager.h>                  // WiFiManager by tzapu https://github.com/tzapu/WiFiManager (tested 2.0.17)
+#include <math.h>                         // pro isfinite()
 
 /////////////////////////////////
 // Uncomment for correct board
@@ -54,8 +55,8 @@
 //#define MeteoMini_V3
 #define MeteoMini_V4
 
-#define version             2.1           // Firmware version
-#define configPortalTimeout 180           // Config portal timeout in seconds
+#define version               2.2           // Firmware version
+#define configPortalTimeout   180           // Config portal timeout in seconds
 
   #define ADC_PIN             0             // ADC pin on LaskaKit Meteo mini
   #define deviderRatio        1.7693877551  // Voltage devider ratio on ADC pin 1M + 1.3MOhm
@@ -210,12 +211,43 @@ void eeprom_saveconfig() {
   EEPROM.end();
 }
 
+// Kontrola, zda hodnota je číslo (není NaN/Inf) a v rozsahu | Check if the value is a number (not NaN/Inf) and if it is in range
+bool okTemperature(float t) {
+  return isfinite(t) && t > -40 && t < 60;
+}
+
+bool okHumidity(float h) {
+  return isfinite(h) && h >= 0 && h <= 100;
+}
+
+bool okPressure(float p) {
+  return isfinite(p) && p > 850 && p < 1100;
+}
+
+bool okCO2(uint16_t c) {
+  return c >= 250 && c <= 5000; // CO₂ v ppm
+}
+
+// Restart ESP
+void restartNow(const char* reason) {
+  Serial.print("Restart due to: ");
+  Serial.println(reason ? reason : "unknown");
+  Serial.flush();
+
+  // vypnout periferie, ať je to čisté
+  WiFi.disconnect(true, true);
+  delay(50);
+  digitalWrite(PWR_PIN, LOW);   // vypnout napájení pro senzory
+
+  esp_restart();
+}
+
 void ConfigPortalOnDemand() {
   Serial.println("Starting configuration portal");
   custom_serverAddress.setValue(serverAddress,40);
   custom_sleepTime.setValue(String(sleepTime).c_str(),6);
-  wm.startConfigPortal("LaskaKit Meteo Config");    // If settings was not correct, start configuration portal
-  esp_restart();
+  wm.startConfigPortal("LaskaKit Meteo Config");            // If settings was not correct, start configuration portal
+  restartNow("Configuration portal is closed");                                           // Restart the device after configuration portal is closed    
 }
 
 
@@ -243,23 +275,23 @@ void postData() {
     switch (sensorType) {
       case 0:               // SHT4x
         Serial.println("Generating serverPath case: 0 - SHT4x");
-        serverPath += "&humV=" + String(humidity) + "&voltage=" + String(bat_voltage) + "&rssi=" + String(rssi);
+        serverPath += "&humV=" + String(humidity) + "&voltage=" + String(bat_voltage) + "&rssi=" + String(rssi) + "&msg=SW ver: " + String(version);
         break;
       case 1:               // BME280
         Serial.println("Generating serverPath case: 1 - BME280");
-        serverPath += "&humV=" + String(humidity) + "&pressV=" + String(pressure) + "&voltage=" + String(bat_voltage) + "&rssi=" + String(rssi);
+        serverPath += "&humV=" + String(humidity) + "&pressV=" + String(pressure) + "&voltage=" + String(bat_voltage) + "&rssi=" + String(rssi) + "&msg=SW ver: " + String(version);
         break;
       case 2:               // SCD4x
         Serial.println("Generating serverPath case: 2 - SCD4x");
-        serverPath += "&humV=" + String(humidity) + "&CO2=" + String(co2) + "&voltage=" + String(bat_voltage) + "&rssi=" + String(rssi);
+        serverPath += "&humV=" + String(humidity) + "&CO2=" + String(co2) + "&voltage=" + String(bat_voltage) + "&rssi=" + String(rssi) + "&msg=SW ver: " + String(version);
         break;
       case 3:               // DS18B20
         Serial.println("Generating serverPath case: 3 - DS18B20");
-        serverPath += "&voltage=" + String(bat_voltage) + "&rssi=" + String(rssi);
+        serverPath += "&voltage=" + String(bat_voltage) + "&rssi=" + String(rssi) + "&msg=SW ver: " + String(version);
         break;
       case 4:               // DS18B20
         Serial.println("Generating serverPath case: 4 - SHT4x+BMP280");
-        serverPath += "&humV=" + String(humidity) + "&pressV=" + String(pressure) + "&voltage=" + String(bat_voltage) + "&rssi=" + String(rssi);
+        serverPath += "&humV=" + String(humidity) + "&pressV=" + String(pressure) + "&voltage=" + String(bat_voltage) + "&rssi=" + String(rssi) + "&msg=SW ver: " + String(version);
         break;
       default:              // If setted wrong
         Serial.print("Error, sensor value is " + String(sensorType) + ", should be from 0 to 4! ");
@@ -344,7 +376,7 @@ void WiFiConnection() {
 void readSHT4x() {
 
   Wire.begin(SDA,SCL);
-  delay(100);                                  // Wait for bus to boot in (we have inconsistent results couple times per day without this)
+  delay(200);                                  // Wait for bus to boot in (we have inconsistent results couple times per day without this)
 
   if (!sht4x.begin()) {
     Serial.println("Error: Can't find a SHT4x sensor. Or wrong sensor type!");
@@ -357,6 +389,11 @@ void readSHT4x() {
   sensors_event_t hum, temp;
   sht4x.getEvent(&hum, &temp);
 
+  if (!okTemperature(temp.temperature) || !okHumidity(hum.relative_humidity)) {
+    Serial.println("SHT4x invalid -> restart");
+    restartNow("SHT4x data invalid");
+  }
+
   temperature = temp.temperature;
   humidity = hum.relative_humidity;
 
@@ -368,7 +405,7 @@ void readSHT4x() {
 void readBME() {
 
   Wire.begin(SDA,SCL);
-  delay(100);                                  // Wait for bus to boot in (we have inconsistent results couple times per day without this)
+  delay(200);                                  // Wait for bus to boot in (we have inconsistent results couple times per day without this)
 
   if (! bme.begin(0x77)) {                      // try default address on LaskaKit module    
     Serial.println("Can't find a BME280 sensor on 0x77 address. Trying 0x76 ..."); 
@@ -386,6 +423,12 @@ void readBME() {
                   Adafruit_BME280::SAMPLING_X1, // humidity
                   Adafruit_BME280::FILTER_OFF   );
   delay(10);
+  bme.takeForcedMeasurement();                 // DŮLEŽITÉ
+
+  if (!okTemperature(bme.readTemperature()) || !okHumidity(bme.readHumidity()) || !okPressure(bme.readPressure() / 100.0F)) {
+    Serial.println("BME280 invalid -> restart");
+    restartNow("BME280 data invalid");
+  }
 
   temperature = bme.readTemperature();
   humidity    = bme.readHumidity();
@@ -400,7 +443,7 @@ void readBME() {
 void readSCD4x() {
 
   Wire.begin(SDA,SCL);
-  delay(100);                                  // Wait for bus to boot in (we have inconsistent results couple times per day without this)
+  delay(200);                                  // Wait for bus to boot in (we have inconsistent results couple times per day without this)
   scd4x.begin(Wire);
 
   if (scd4x.startPeriodicMeasurement()) {
@@ -413,6 +456,11 @@ void readSCD4x() {
   if (scd4x.readMeasurement(co2, temperature, humidity)) {
     Serial.print("Error trying to execute readMeasurement(): ");
     return;
+  }
+
+  if (!okTemperature(temperature) || !okHumidity(humidity) || !okCO2(co2)) {
+    Serial.println("SCD4X invalid -> restart");
+    restartNow("SCD4X data invalid");
   }
 
   Serial.print("Temp: "); Serial.print(temperature); Serial.println("°C");
@@ -433,6 +481,11 @@ void readDS18B20() {
 
   // Request temperature readings
   DS18B20.requestTemperatures();
+
+  if (!okTemperature(DS18B20.getTempC(sensorAddress))) {
+    Serial.println("SHT4x invalid -> restart");
+    restartNow("SHT4x data invalid");
+  }
   // Fetch temperature in Celsius
   temperature = DS18B20.getTempC(sensorAddress);
   
@@ -443,7 +496,7 @@ void readDS18B20() {
 void readSHT4xPlusBMP280() {
 
   Wire.begin(SDA,SCL);
-  delay(100);                                  // Wait for bus to boot in (we have inconsistent results couple times per day without this)
+  delay(200);                                  // Wait for bus to boot in (we have inconsistent results couple times per day without this)
 
   // SHT4x
   if (!sht4x.begin()) {
@@ -456,6 +509,12 @@ void readSHT4xPlusBMP280() {
 
   sensors_event_t hum, temp;
   sht4x.getEvent(&hum, &temp);
+
+  if (!okTemperature(temp.temperature) || !okHumidity(hum.relative_humidity)) {
+    Serial.println("SHT4x invalid -> restart");
+    restartNow("SHT4x data invalid");
+  }
+
 
   temperature = temp.temperature;
   humidity = hum.relative_humidity;
@@ -474,6 +533,12 @@ void readSHT4xPlusBMP280() {
                   Adafruit_BMP280::FILTER_X16,      /* Filtering. */
                   Adafruit_BMP280::STANDBY_MS_500); /* Standby time. */
   delay(10);
+  bmp.takeForcedMeasurement();                 // DŮLEŽITÉ
+
+  if (!okPressure(bmp.readPressure() / 100.0F)) {
+    Serial.println("BMP280 invalid -> restart");
+    restartNow("BMP280 data invalid");
+  }
 
   pressure = bmp.readPressure() / 100.0F;  
 
@@ -524,9 +589,9 @@ void setup() {
   delay( 1 );
 
   // for board version > 3.5 need to turn uSUP ON
-  pinMode(PWR_PIN, OUTPUT);      // Set EN pin for uSUP stabilisator as output
-  digitalWrite(PWR_PIN, HIGH);   // Turn on the uSUP power
-
+  pinMode(PWR_PIN, OUTPUT);       // Set EN pin for uSUP stabilisator as output
+  digitalWrite(PWR_PIN, HIGH);    // Turn on the uSUP power
+  delay(200);                   // Wait for uSUP to power up 
 
   Serial.begin(115200);
   while(!Serial) {} // Wait for serrial ready
