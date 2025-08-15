@@ -19,9 +19,9 @@
  *  - Board:   LaskaKit Meteo Mini    https://www.laskakit.cz/laskakit-meteo-mini/
  *  - Sensor:  SHT40                  https://www.laskakit.cz/laskakit-sht40-senzor-teploty-a-vlhkosti-vzduchu/
  *  - Sensor:  SHT45                  https://www.laskakit.cz/laskakit-sht45-senzor-teploty-a-vlhkosti-vzduchu/
- *  - Sensor:  BME280                 https://www.laskakit.cz/arduino-senzor-tlaku--teploty-a-vlhkosti-bme280/
+ *  - Sensor:  BME280                 https://www.laskakit.cz/arduino-senzor-tlaku--teploty-a-vlhkosti-bme280/            Tested
  *  - Sensor:  SCD41                  https://www.laskakit.cz/laskakit-scd41-senzor-co2--teploty-a-vlhkosti-vzduchu/
- *  - Sensor:  DS18B20                https://www.laskakit.cz/dallas-ds18b20-orig--digitalni-vodotesne-cidlo-teploty-1m/
+ *  - Sensor:  DS18B20                https://www.laskakit.cz/dallas-ds18b20-orig--digitalni-vodotesne-cidlo-teploty-1m/  Tested
  *  - Sensor:  SHT4x+BMP280           https://www.laskakit.cz/laskakit-outdoor-meteo-thp-senzor-sht40-bmp280
  *  - Battery LiPol 603048 900mAh     https://www.laskakit.cz/ehao-lipol-baterie-603048-900mah-3-7v/
  * 
@@ -52,17 +52,17 @@
 // Uncomment for correct board
 /////////////////////////////////
 
-//#define MeteoMini_V3
-#define MeteoMini_V4
+#define MeteoMini_V3                      // Tested on LaskaKit Meteo mini V3.2, V3.5
+//#define MeteoMini_V4                  // Tested on LaskaKit Meteo mini V4.0   
 
 #define version               2.2           // Firmware version
 #define configPortalTimeout   180           // Config portal timeout in seconds
 
-  #define ADC_PIN             0             // ADC pin on LaskaKit Meteo mini
-  #define deviderRatio        1.7693877551  // Voltage devider ratio on ADC pin 1M + 1.3MOhm
-  #define SDA                 19            // I2C SDA pin on LaskaKit Meteo mini
-  #define SCL                 18            // I2C SCL pin on LaskaKit Meteo mini
-  #define ONE_WIRE_BUS        10            // DS18B20 pin on LaskaKit Meteo mini
+#define ADC_PIN             0             // ADC pin on LaskaKit Meteo mini
+#define deviderRatio        1.7693877551  // Voltage devider ratio on ADC pin 1M + 1.3MOhm
+#define SDA                 19            // I2C SDA pin on LaskaKit Meteo mini
+#define SCL                 18            // I2C SCL pin on LaskaKit Meteo mini
+#define ONE_WIRE_BUS        10            // DS18B20 pin on LaskaKit Meteo mini
 
 #ifdef MeteoMini_V3
   #define PWR_PIN             3             // Power pin for sensors
@@ -70,6 +70,7 @@
 #elif defined MeteoMini_V4
   #define PWR_PIN             4             // Power pin for sensors
   #define OnDemandPin         5             // On demand button for calling the configuration portal. Push when the device is powered on to enter the configuration portal.
+
 #else
   #error "Board not defined!"
 #endif
@@ -275,29 +276,32 @@ void postData() {
     switch (sensorType) {
       case 0:               // SHT4x
         Serial.println("Generating serverPath case: 0 - SHT4x");
-        serverPath += "&humV=" + String(humidity) + "&voltage=" + String(bat_voltage) + "&rssi=" + String(rssi) + "&msg=SW ver: " + String(version);
+        serverPath += "&humV=" + String(humidity) + "&voltage=" + String(bat_voltage) + "&rssi=" + String(rssi);
         break;
       case 1:               // BME280
         Serial.println("Generating serverPath case: 1 - BME280");
-        serverPath += "&humV=" + String(humidity) + "&pressV=" + String(pressure) + "&voltage=" + String(bat_voltage) + "&rssi=" + String(rssi) + "&msg=SW ver: " + String(version);
+        serverPath += "&humV=" + String(humidity) + "&pressV=" + String(pressure) + "&voltage=" + String(bat_voltage) + "&rssi=" + String(rssi);
         break;
       case 2:               // SCD4x
         Serial.println("Generating serverPath case: 2 - SCD4x");
-        serverPath += "&humV=" + String(humidity) + "&CO2=" + String(co2) + "&voltage=" + String(bat_voltage) + "&rssi=" + String(rssi) + "&msg=SW ver: " + String(version);
+        serverPath += "&humV=" + String(humidity) + "&CO2=" + String(co2) + "&voltage=" + String(bat_voltage) + "&rssi=" + String(rssi);
         break;
       case 3:               // DS18B20
         Serial.println("Generating serverPath case: 3 - DS18B20");
-        serverPath += "&voltage=" + String(bat_voltage) + "&rssi=" + String(rssi) + "&msg=SW ver: " + String(version);
+        serverPath += "&voltage=" + String(bat_voltage) + "&rssi=" + String(rssi);
         break;
       case 4:               // DS18B20
         Serial.println("Generating serverPath case: 4 - SHT4x+BMP280");
-        serverPath += "&humV=" + String(humidity) + "&pressV=" + String(pressure) + "&voltage=" + String(bat_voltage) + "&rssi=" + String(rssi) + "&msg=SW ver: " + String(version);
+        serverPath += "&humV=" + String(humidity) + "&pressV=" + String(pressure) + "&voltage=" + String(bat_voltage) + "&rssi=" + String(rssi);
         break;
       default:              // If setted wrong
         Serial.print("Error, sensor value is " + String(sensorType) + ", should be from 0 to 4! ");
         ConfigPortalOnDemand();
         break;
     }
+
+    Serial.println("Generating serverPath: adding message");
+        serverPath += "&msg=SW%20ver:%20" + String(version);
 
     Serial.println(serverPath);
 
@@ -326,11 +330,17 @@ void postData() {
     Serial.println("Wi-Fi disconnected");
 }
 
-void GoToSleep() {
-  // ESP Deep Sleep 
-  digitalWrite(PWR_PIN, LOW);   // Turn off the uSUP power
+// ESP Deep Sleep 
+void GoToSleep(const char* reason) {
+  Serial.print("Going to sleep due to: ");
+  Serial.println(reason ? reason : "unknown");
   Serial.flush();
   delay(100);
+    // vypnout periferie, ať je to čisté
+  WiFi.disconnect(true, true);
+  delay(100);
+  digitalWrite(PWR_PIN, LOW);  // Turn off the uSUP power | Vypnout napájení pro senzory
+
   Serial.println("Going to sleep for " + String(sleepTime) + " minutes");
   esp_sleep_enable_timer_wakeup(sleepTime * 60 * 1000000);
   esp_deep_sleep_start();
