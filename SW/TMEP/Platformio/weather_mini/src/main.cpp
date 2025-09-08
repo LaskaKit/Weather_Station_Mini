@@ -32,6 +32,13 @@
  * Email:podpora@laskakit.cz
  * Web:laskakit.cz
  * Written by laskakit.cz (2025)
+ * 
+ * Changelog:
+ *    v2.3 - 
+ *        * Added sleep reason, 
+ *        * Added message with version
+ *    v2.2 - Added restart reason
+ * 
  */
 
 #include <Wire.h>
@@ -55,7 +62,8 @@
 #define MeteoMini_V3                      // Tested on LaskaKit Meteo mini V3.2, V3.5
 //#define MeteoMini_V4                  // Tested on LaskaKit Meteo mini V4.0   
 
-#define version               2.2           // Firmware version
+
+#define version               2.3           // Firmware version
 #define configPortalTimeout   180           // Config portal timeout in seconds
 
 #define ADC_PIN             0             // ADC pin on LaskaKit Meteo mini
@@ -66,10 +74,12 @@
 
 #ifdef MeteoMini_V3
   #define PWR_PIN             3             // Power pin for sensors
+  #define board               "LaskaKit_Meteo_mini_V3" // Board name"
 
 #elif defined MeteoMini_V4
   #define PWR_PIN             4             // Power pin for sensors
   #define OnDemandPin         5             // On demand button for calling the configuration portal. Push when the device is powered on to enter the configuration portal.
+  #define board               "LaskaKit_Meteo_mini_V4" // Board name"
 
 #else
   #error "Board not defined!"
@@ -301,7 +311,7 @@ void postData() {
     }
 
     Serial.println("Generating serverPath: adding message");
-        serverPath += "&msg=SW%20ver:%20" + String(version);
+        serverPath += "&msg=" "Board:%20" + String(board) + ";%20SW%20ver:%20" + String(version);
 
     Serial.println(serverPath);
 
@@ -332,7 +342,7 @@ void postData() {
 
 // ESP Deep Sleep 
 void GoToSleep(const char* reason) {
-  Serial.print("Going to sleep due to: ");
+  Serial.print("Going to sleep for " + String(sleepTime) + " minutes due to: ");
   Serial.println(reason ? reason : "unknown");
   Serial.flush();
   delay(100);
@@ -341,9 +351,42 @@ void GoToSleep(const char* reason) {
   delay(100);
   digitalWrite(PWR_PIN, LOW);  // Turn off the uSUP power | Vypnout napájení pro senzory
 
-  Serial.println("Going to sleep for " + String(sleepTime) + " minutes");
   esp_sleep_enable_timer_wakeup(sleepTime * 60 * 1000000);
   esp_deep_sleep_start();
+}
+void WiFiConnection_new() {
+  WiFi.persistent(false);            // [FIX] nepiš do NVS při pokusech
+  WiFi.mode(WIFI_STA);               // STA mód
+  delay(120);                        // [FIX] nech driver naběhnout
+
+  //wm.resetSettings();              // testovací mazání – ponech zakomentované
+
+  // Set save config callback
+  wm.setSaveConfigCallback(eeprom_saveconfig);
+
+  // Předvyplnění parametrů
+  custom_serverAddress.setValue(serverAddress, 40);
+  custom_sleepTime.setValue(String(sleepTime).c_str(), 6);
+
+  // Custom parametry
+  wm.addParameter(&custom_serverAddress);
+  wm.addParameter(&custom_domain);
+  wm.addParameter(&custom_sleepTime);
+  wm.addParameter(&custom_sensorType);
+
+  // WiFiManager nastavení
+  wm.setDarkMode(true);
+  wm.setConfigPortalTimeout(5 * 60); // 5 min portál
+  wm.setBreakAfterConfig(true);      // po uložení/timeoutu se vrať
+  wm.setWiFiAutoReconnect(true);     // [FIX] automatický reconnect
+  wm.setCleanConnect(true);          // [FIX] čisté připojení bez zbytků stavů
+
+  if (!wm.autoConnect("LaskaKit Meteo Config")) {
+    Serial.println("Failed to connect");
+  } else {
+    Serial.println("Wi-Fi connected successfully");
+    rssi = WiFi.RSSI();
+  }
 }
 
 // pripojeni k WiFi | WiFi Connection
@@ -353,7 +396,6 @@ void WiFiConnection() {
   WiFi.mode( WIFI_STA);
 
   // reset settings - wipe stored credentials for testing
-  // these are stored by the esp library
   //wm.resetSettings();
 
   // Set save config callback
@@ -377,9 +419,9 @@ void WiFiConnection() {
   } else {
     //if you get here you have connected to the WiFi    
     Serial.println("Wi-Fi connected successfully");
+    rssi = WiFi.RSSI();
   }
 
-  rssi = WiFi.RSSI();
 }
 
 // Přečíst data z SHT4x | Read data from SHT4x
@@ -593,6 +635,28 @@ void readBat() {
   Serial.println("Battery voltage: " + String(bat_voltage) + "V");
 }
 
+void print_reset_reason(int reason){
+  Serial.printf("Reset reason: %d = ", reason);
+  switch (reason){
+    case 1 : Serial.println ("POWERON_RESET");break;          /**<1,  Vbat power on reset*/
+    case 3 : Serial.println ("SW_RESET");break;               /**<3,  Software reset digital core*/
+    case 4 : Serial.println ("OWDT_RESET");break;             /**<4,  Legacy watch dog reset digital core*/
+    case 5 : Serial.println ("DEEPSLEEP_RESET");break;        /**<5,  Deep Sleep reset digital core*/
+    case 6 : Serial.println ("SDIO_RESET");break;             /**<6,  Reset by SLC module, reset digital core*/
+    case 7 : Serial.println ("TG0WDT_SYS_RESET");break;       /**<7,  Timer Group0 Watch dog reset digital core*/
+    case 8 : Serial.println ("TG1WDT_SYS_RESET");break;       /**<8,  Timer Group1 Watch dog reset digital core*/
+    case 9 : Serial.println ("RTCWDT_SYS_RESET");break;       /**<9,  RTC Watch dog Reset digital core*/
+    case 10 : Serial.println ("INTRUSION_RESET");break;       /**<10, Instrusion tested to reset CPU*/
+    case 11 : Serial.println ("TGWDT_CPU_RESET");break;       /**<11, Time Group reset CPU*/
+    case 12 : Serial.println ("SW_CPU_RESET");break;          /**<12, Software reset CPU*/
+    case 13 : Serial.println ("RTCWDT_CPU_RESET");break;      /**<13, RTC Watch dog Reset CPU*/
+    case 14 : Serial.println ("EXT_CPU_RESET");break;         /**<14, for APP CPU, reseted by PRO CPU*/
+    case 15 : Serial.println ("RTCWDT_BROWN_OUT_RESET");break;/**<15, Reset when the vdd voltage is not stable*/
+    case 16 : Serial.println ("RTCWDT_RTC_RESET");break;      /**<16, RTC Watch dog reset digital core and rtc module*/
+    default : Serial.println ("NO_MEAN");
+  }
+}
+
 void setup() {
   // Hned vypneme WiFi | disable WiFi, coming from DeepSleep, as we do not need it right away
   WiFi.mode( WIFI_OFF );
@@ -606,6 +670,9 @@ void setup() {
   Serial.begin(115200);
   while(!Serial) {} // Wait for serrial ready
 
+  esp_reset_reason_t reset_reason = esp_reset_reason();
+  print_reset_reason(reset_reason);
+
   #ifdef OnDemandPin
     pinMode(OnDemandPin, INPUT);
       // If the OnDemandPin is LOW, start the configuration portal on demand
@@ -618,7 +685,8 @@ void setup() {
   Serial.println("LaskaKit Meteo Mini Weather Station");
   Serial.println("TMEP.CZ or EU With EPPROM Settings");
   Serial.println("supporting SHT4x or BME280 or SCD41 or DS18B20 or SHT4x+BMP280");
-  Serial.print("version: "); Serial.println(version);
+  Serial.println("board: " + String(board));
+  Serial.println("version: " + String(version));
   Serial.println("-------------------");
 
   eeprom_read();
@@ -630,7 +698,7 @@ void setup() {
   postData();
 
   WiFi.disconnect(true);
-  GoToSleep();
+  GoToSleep("end data posting");
 }
 
 void loop() {
