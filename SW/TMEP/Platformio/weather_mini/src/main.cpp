@@ -59,8 +59,8 @@
 // Uncomment for correct board
 /////////////////////////////////
 
-#define MeteoMini_V3                      // Tested on LaskaKit Meteo mini V3.2, V3.5
-//#define MeteoMini_V4                  // Tested on LaskaKit Meteo mini V4.0   
+//#define MeteoMini_V3                      // Tested on LaskaKit Meteo mini V3.2, V3.5
+#define MeteoMini_V4                  // Tested on LaskaKit Meteo mini V4.0   
 
 
 #define version               2.3           // Firmware version
