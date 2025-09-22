@@ -34,24 +34,13 @@ Pro ten je na základní desce rovněž osazen konektor. Na desce je též osaze
 
 ---
 
-## Nová revize V4.1
-
-Byla vydána nová hardwarová revize **LaskaKit Meteo Mini V4.1**, která přináší drobná vylepšení a zachovává plnou kompatibilitu s tvými projekty.  
-
-📐 Schéma zapojení (Rev. 4.1):  
-![Schematic V4.1](https://github.com/LaskaKit/Weather_Station_Mini/blob/main/hw/LaskaKit_METEO_MINI_v_4_1.png)  
-
-👉 Kompletní PDF schéma: [LaskaKit_METEO_MINI_v_4_1.pdf](https://github.com/LaskaKit/Weather_Station_Mini/blob/main/hw/LaskaKit_METEO_MINI_v_4_1.pdf)
-
----
-
 ## Návod k použití
 
 V našem detailním návodu na stavbu meteostanice s Meteo Mini najdeš vše od sestavení, přes naprogramování až po nastavení.  
 V ukázkovém kódu používáme **WiFi Manager**, který slouží pro prvotní konfiguraci celé meteostanice.  
 
-Stačí připojit akumulátor k Meteo Mini, vyhledat WiFi síť, kterou Meteo Mini vytvoří, přihlásit se (AP: `LaskaKitMeteo`, Heslo: `meteostation`) a nastavit tvou domácí Wi-Fi síť.  
+Stačí připojit akumulátor k Meteo Mini, vyhledat WiFi síť, kterou Meteo Mini vytvoří, přihlásit se (AP: `LaskaKitMeteo`) a nastavit tvou domácí Wi-Fi síť.  
 
 ---
 
-🔗 Odkaz na stavebnici: https://www.laskarduino.cz/laskakit-meteo-mini-meteostanice/
+🔗 Odkaz na stavebnici: https://www.laskakit.cz/laskakit-meteo-mini-meteostanice/
