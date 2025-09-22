@@ -63,7 +63,7 @@
 #define MeteoMini_V4                  // Tested on LaskaKit Meteo mini V4.0   
 
 
-#define version               2.3           // Firmware version
+#define version               3.0           // Firmware version
 #define configPortalTimeout   180           // Config portal timeout in seconds
 
 #define ADC_PIN             0             // ADC pin on LaskaKit Meteo mini
