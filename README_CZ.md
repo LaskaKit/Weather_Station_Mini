@@ -5,11 +5,11 @@ Nachystali jsme pro tebe kompletní kit obsahující radiační štít, krabičk
 
 ![LaskaKit WeatherStation kit](https://github.com/LaskaKit/Weather_Station_Mini/blob/main/img/LaskaKitMeteo.JPG)
 
-Obsahuje modul ESP-C3-12F založený na Wi-Fi čipu ESP32-C3, je osazen konektorem pro připojení I²C čidel.  
+Obsahuje modul ESP32-C3-mimi založený na Wi-Fi čipu ESP32-C3, je osazen konektorem pro připojení I²C čidel.  
 Meteostanice je napájena z LiPol akumulátoru, který je připojen pomocí konektoru na základní desce.  
 
 Pro ještě větší jednoduchost zapojení je deska připravena na osazení interního teplotního čidla DALLAS DS18B20 a nechybí náš populární konektor μŠup pro snadné připojení dalších čidel se sběrnicí I²C.  
-Deska má také integrovanou nabíječku akumulátoru, takže může být akumulátor nabíjen z USB-C konektoru nebo solárního panelu se jmenovitým napětím 5–6 V.  
+Deska má také integrovanou nabíječku akumulátoru, takže může být akumulátor nabíjen z USB-C konektoru nebo solárního panelu se jmenovitým napětím 5–10 V.  
 Pro ten je na základní desce rovněž osazen konektor. Na desce je též osazený dělič napětí, který je připojen k akumulátoru a jeho výstup je připojen na ADC vstup mikrokontroléru. Stav akumulátoru tak bude neustále pod dohledem.  
 
 ---
