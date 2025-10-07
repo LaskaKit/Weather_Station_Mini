@@ -1,16 +1,14 @@
-# Návod na stavbu venkovní Wi-Fi meteostanice s Meteo Mini
+# Návod na stavbu venkovní Wi-Fi meteostanice s Meteo Mini v3
 
 Přemýšlíš o výrobě své vlastní domácí meteostanice?  
-Nachystali jsme pro tebe kompletní kit obsahující radiační štít, krabičku, držák štítu, spojovací materiál a naši vývojovou desku Meteo Mini, kterou jednoduše naprogramuješ pomocí Arduino IDE.
+Nachystali jsme pro tebe kompletní kit obsahující radiační štít, krabičku, držák štítu, senzory, spojovací materiál a naši vývojovou desku Meteo Mini, kterou jednoduše naprogramuješ pomocí Arduino IDE.
 
-![LaskaKit WeatherStation kit](https://github.com/LaskaKit/Weather_Station_Mini/blob/main/img/LaskaKitMeteo.JPG)
+<img width="1024" height="768" alt="image" src="https://github.com/user-attachments/assets/94968a10-22d6-427e-960c-520b6ca93d04" />
 
-Obsahuje modul ESP32-C3-mimi založený na Wi-Fi čipu ESP32-C3, je osazen konektorem pro připojení I²C čidel.  
-Meteostanice je napájena z LiPol akumulátoru, který je připojen pomocí konektoru na základní desce.  
-
-Pro ještě větší jednoduchost zapojení je deska připravena na osazení interního teplotního čidla DALLAS DS18B20 a nechybí náš populární konektor μŠup pro snadné připojení dalších čidel se sběrnicí I²C.  
-Deska má také integrovanou nabíječku akumulátoru, takže může být akumulátor nabíjen z USB-C konektoru nebo solárního panelu se jmenovitým napětím 5–10 V.  
-Pro ten je na základní desce rovněž osazen konektor. Na desce je též osazený dělič napětí, který je připojen k akumulátoru a jeho výstup je připojen na ADC vstup mikrokontroléru. Stav akumulátoru tak bude neustále pod dohledem.  
+Obsahuje modul ESP32-C3-mimi založený na Wi-Fi čipu ESP32-C3, je osazen konektorem pro připojení I²C, SPI, a IO čidel.  
+Meteostanice je napájena z LiPol akumulátoru, který je připojen pomocí JST-PH-2 konektoru na základní desce.  
+  
+Deska má také integrovanou nabíječku Li-Pol akumulátoru, takže může být akumulátor nabíjen z USB-C konektoru nebo solárního panelu se jmenovitým napětím 5–10, pro který je na základní desce rovněž osazen konektor JST-PH-2. Na desce je též osazený dělič napětí, který je připojen k akumulátoru a jeho výstup je připojen na ADC vstup mikrokontroléru. Stav akumulátoru tak bude neustále pod dohledem.  
 
 ---
 
