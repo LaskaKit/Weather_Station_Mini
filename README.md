@@ -9,6 +9,6 @@ In addition, the board has an integrated Li-Pol battery charger so the battery c
 
 ![LaskaKit Meteo Mini](https://github.com/LaskaKit/Weather_Station_Mini/blob/main/img/2.jpg)<br/>
 
-If you're worried about the assembly proccess, don't be. Our simple yet detailed build guide (found in Weather_Station_Mini/Manual/) covers everything from the physical assembly to programming and configuration. In fact, we also have the WiFi Manager sample code, which allows you to just plug the battery into the Meteo Mini, find the WiFi network that the Meteo Mini will create, log in (AP: LaskaKitMeteo), set up your home WiFi network and you're done.
+If you're worried about the assembly proccess, don't be. Our simple yet detailed build guide (found in Weather_Station_Mini/Manual/) covers everything from the physical assembly to programming and configuration. In fact, our WiFi Manager-enabled sample code allows you to just plug the battery into the Meteo Mini, find the WiFi transmitted by the Meteo Mini, log in (SSID: LaskaKitMeteo), set up your home WiFi network and you're done.
 
 Link to Weather Station kit [https://www.laskakit.cz/laskakit-meteo-mini-meteostanice/](https://www.laskakit.cz/laskakit-meteo-mini-meteostanice/)
