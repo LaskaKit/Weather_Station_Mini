@@ -17,8 +17,8 @@
  * Buy your DIY kit here:             https://www.laskakit.cz/laskakit-meteo-mini-meteostanice/
  * main HW in the kit:
  *  - Board:   LaskaKit Meteo Mini    https://www.laskakit.cz/laskakit-meteo-mini/
- *  - Sensor:  SHT40                  https://www.laskakit.cz/laskakit-sht40-senzor-teploty-a-vlhkosti-vzduchu/
- *  - Sensor:  SHT45                  https://www.laskakit.cz/laskakit-sht45-senzor-teploty-a-vlhkosti-vzduchu/
+ *  - Sensor:  SHT40                  https://www.laskakit.cz/laskakit-sht40-senzor-teploty-a-vlhkosti-vzduchu/           Tested
+ *  - Sensor:  SHT45                  https://www.laskakit.cz/laskakit-sht45-senzor-teploty-a-vlhkosti-vzduchu/           Tested
  *  - Sensor:  BME280                 https://www.laskakit.cz/arduino-senzor-tlaku--teploty-a-vlhkosti-bme280/            Tested
  *  - Sensor:  SCD41                  https://www.laskakit.cz/laskakit-scd41-senzor-co2--teploty-a-vlhkosti-vzduchu/
  *  - Sensor:  DS18B20                https://www.laskakit.cz/dallas-ds18b20-orig--digitalni-vodotesne-cidlo-teploty-1m/  Tested
