@@ -1,0 +1,165 @@
+
+# LaskaKit Meteo Mini for board version 4.1
+# David Antoš, 2026, based on profiles for older boards by LaskaKit staff
+# and created with help of various AI tools
+#
+# This script uses deep sleep to conserve battery power. For tinkering,
+# either set the sleep to be very short, or follow the comments and comment
+# out sleep-related commands.
+#
+# To deploy:
+#
+# - set the sleep cycle to a suitable value
+#
+# - copy common/secrets.yaml.example to common/secrets.yaml and set
+# suitable values (you may use https://esphome.io/components/api/ to create
+# random keys)
+#
+# - most of the work should be done with
+#
+# esphome run meteo-station-board-v4.1.yaml
+# and
+# esphome logs meteo-station-board-v4.1.yaml --device <IP-of-the-chip>
+# or (should your DNS work automagically)
+# esphome logs meteo-station-board-v4.1.yaml --device meteo-mini.lan
+
+substitutions:
+  device_name: meteo-mini
+
+packages:
+  wifi: !include common/wifi.yaml
+  device_base: !include common/device_base-board-v4.1.yaml
+
+
+esphome:
+  name: ${device_name}
+  friendly_name: LaskaKit Meteo Mini
+
+
+# I2C power switch
+switch:
+  - platform: gpio
+    pin: GPIO4 
+#    name: "${device_name} i2c power" # if you set up the name, it will be  displayed by homeassistant as a switch
+    id: i2c_pwr
+    restore_mode: ALWAYS_ON  # Keep the pin high after boot (so that the sensors get initialised)
+
+
+esp32:
+  board: esp32-c3-devkitm-1
+  framework:
+    type: esp-idf
+
+
+i2c:
+  sda: 19
+  scl: 18
+  scan: false
+  id: bus_a
+
+
+# Note that sensors are never updated automatically, we run a script to
+# report the values
+sensor:
+  - platform: bmp280_i2c
+    update_interval: never # Updated manually in a loop
+    id: sensor_bmp280
+    temperature:
+      name: "BMP280 Temperature"
+      oversampling: 16x
+      id: bmp280_temp
+    pressure:
+      name: "BMP280 Absolute Pressure"
+      id: bmp280_pressure
+    address: 0x77
+
+  - platform: sht4x
+    update_interval: never # Updated manually in a loop
+    id: sensor_sht40
+    humidity:
+      name: "SHT40 Humidity"
+      id: sht40_humidity
+    temperature:
+      name: "SHT40 Temperature"
+      id: sht40_temperature
+
+  - platform: adc
+    update_interval: never # Updated manually in a loop
+    id: battery_volt
+    # divider ratio = 1.7693877551
+    pin: GPIO0
+    name: "Batery Voltage"
+    # ESP32-C3 standard attenuation 
+    attenuation: 12dB
+    entity_category: diagnostic
+    filters:
+      - multiply: 1.7693877551 # should match the resistor divider
+
+  - platform: template
+    update_interval: never # Updated manually in a loop
+    name: "Battery Percentage"
+    id: battery_pct
+    unit_of_measurement: "%"
+    device_class: battery
+    entity_category: diagnostic
+    state_class: measurement
+    lambda: |-
+      if (id(battery_volt).state < 3.20) {
+        return 0.0;
+      } else if (id(battery_volt).state > 4.18) {
+        return 100.0;
+      } else {
+        // Linearly map the 3.2V - 4.18V range to 0% - 100%
+        return ((id(battery_volt).state - 3.20) / (4.18 - 3.20)) * 100.0;
+      }
+
+
+script:
+  - id: read_and_report_sensors
+    mode: single
+    then:
+      - logger.log: "Powering on i2c"
+      - switch.turn_on: i2c_pwr
+      - delay: 500ms
+      
+      - logger.log: "Updating sensors"
+      - component.update: sensor_bmp280
+      - component.update: sensor_sht40
+      - component.update: battery_volt
+      - component.update: battery_pct
+      - component.update: sensor_wifi_signal
+
+      - delay: 300ms
+      - switch.turn_off: i2c_pwr
+      - logger.log: "Powering off i2c, updates pushed to HA buffer"
+
+      - delay: 7s
+
+      #x# potentially comment this out when testing with the interval only
+      - logger.log: "Entering deep sleep"
+      - deep_sleep.enter: deep_sleep_control
+
+
+#x# for testing with the interval, this should be commented out
+api:
+  on_client_connected:
+    then:
+      - script.execute: read_and_report_sensors
+
+#x# for testing with the interval, this should be commented out
+deep_sleep:
+  id: deep_sleep_control
+  sleep_duration: 1min 
+  run_duration: 30s # as assurance for flakey wifi
+
+#x# interval:
+#x#   - interval: 10s
+#x#     then:
+#x#       - script.execute: read_and_report_sensors
+
+
+##logger:
+###  hardware_uart: UART0
+##  level: verbose
+
+
